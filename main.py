@@ -140,5 +140,47 @@ for plumber in plumbers:
 
 
 
+# Photography Category scraping
+
+photographers_name = []
+photographers_website = []
+photographers_phone = []
+photographers_email = []
+
+url_photo = "https://ukbusinessportal.co.uk/category/photographers/"
+res = requests.get(url_photo)
+driver.get(url_photo)
+soup = BeautifulSoup(driver.page_source, 'html.parser')
+photographers = soup.find_all('div', class_='pl-4')
+
+for photographer in photographers:
+    try:
+        name = photographer.find('h3').text.strip() if taxi.find('h3') else None
+    except AttributeError:
+        name = ''
+    # get all <a> tags
+    links = photographer.find_all('a')
+
+    try: 
+        website = links[1]['href'] if len(links) > 1 else None
+    except AttributeError:
+        website = ''
+
+    try:
+        phone = links[2].text.strip() if len(links) > 2 else None
+    except AttributeError:
+        phone = ''
+    try: 
+        email = links[3].text if len(links) > 3 else None
+    except AttributeError:
+        email = ''
+
+
+    photographers_name.append(name)
+    photographers_website.append(website)
+    photographers_phone.append(phone)
+    photographers_email.append(email)
+
+
 
 
