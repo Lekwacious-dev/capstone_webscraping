@@ -38,12 +38,13 @@ taxis_phone = []
 taxis_email = []
 
 
+# Taxi Category scraping
 
 url = "https://ukbusinessportal.co.uk/category/taxis/"
 
 res = requests.get(url)
 
-# print(res.status_code)
+print(res.status_code)
 
 driver.get(url)
 
@@ -51,10 +52,8 @@ time.sleep(10)
 
 soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-
 taxis = soup.find_all('div',  class_='pl-4')
 
-# print(taxi_info.text)
 
 for taxi in taxis:
     try:
@@ -85,18 +84,61 @@ for taxi in taxis:
     taxis_phone.append(phone)
     taxis_email.append(email)
 
-driver.quit()
-
-data = {
-    'Taxis_Name': taxis_name,
-    'Taxis_Website': taxis_website,
-    'Taxis_Phone': taxis_phone,
-    'Taxis_Email': taxis_email
-}
-
-
-df = pd.DataFrame(data)
 
 
 
-print(df)
+
+# Plumbers Category scraping
+
+plumbers_name = []
+plumbers_website = []
+plumbers_phone = []
+plumbers_email = []
+
+url_plumbers = "https://ukbusinessportal.co.uk/category/plumbers/"
+
+res = requests.get(url_plumbers)
+
+# print(res.status_code)
+
+driver.get(url_plumbers)
+
+
+soup = BeautifulSoup(driver.page_source, 'html.parser')
+
+plumbers = soup.find_all('div',  class_='pl-4')
+
+for plumber in plumbers:
+    try:
+        name = plumber.find('h3').text.strip() if taxi.find('h3') else None
+    except AttributeError:
+        name = ''
+
+    # get all <a> tags
+    links = plumber.find_all('a')
+
+    try: 
+        website = links[1]['href'] if len(links) > 1 else None
+    except AttributeError:
+        website = ''
+
+    try:
+        phone = links[2].text.strip() if len(links) > 2 else None
+    except AttributeError:
+        phone = ''
+    try: 
+        email = links[3].text if len(links) > 3 else None
+    except AttributeError:
+        email = ''
+
+
+    plumbers_name.append(name)
+    plumbers_website.append(website)
+    plumbers_phone.append(phone)
+    plumbers_email.append(email)
+
+
+
+
+
+
