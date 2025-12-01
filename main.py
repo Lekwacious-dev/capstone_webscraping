@@ -182,5 +182,42 @@ for photographer in photographers:
     photographers_email.append(email)
 
 
+driver.quit()
 
+taxi_data = {
+    'Taxis_Name': taxis_name,
+    'Taxis_Website': taxis_website,
+    'Taxis_Phone': taxis_phone,
+    'Taxis_Email': taxis_email
+}
+
+plumber_data = {
+    'Plumbers_Name': plumbers_name,
+    'Plumbers_website': plumbers_website,
+    'Plumbers_Phone': plumbers_phone,
+    'Plumbers_email': plumbers_email
+}
+
+
+photographer_data = {
+    'Photographers_Name': photographers_name,
+    'Photographers_website': photographers_website,
+    'Photographers_Phone': photographers_phone,
+    'Photographers_email': photographers_email
+}
+
+
+# Adding to dataframe
+
+
+df_taxis = pd.DataFrame(taxi_data)
+df_plumber = pd.DataFrame(plumber_data)
+df_photogropher = pd.DataFrame(photographer_data)
+
+
+#Convert to csv file
+
+df_taxis.to_csv('taxis.csv', index=False)
+df_plumber.to_csv('plumbers.csv', index=False)
+df_photogropher.to_csv('photographers.csv', index=False)
 
