@@ -35,71 +35,61 @@ def chrome_driver():
 
 driver = chrome_driver()
 
-# Lists to store extracted data
-taxis_name = []
-taxis_website = []
-taxis_phone = []
-taxis_email = []
 
+# Photography Category scraping
 
-# Taxi Category scraping
+photographers_name = []
+photographers_website = []
+photographers_phone = []
+photographers_email = []
 
-url = "https://ukbusinessportal.co.uk/category/taxis/"
-
-res = requests.get(url)
-
+url_photo = "https://ukbusinessportal.co.uk/category/photographers/"
+res = requests.get(url_photo)
 print(res.status_code)
 
-driver.get(url)
-
+driver.get(url_photo)
 time.sleep(10)
-
 soup = BeautifulSoup(driver.page_source, 'html.parser')
+photographers = soup.find_all('div', class_='pl-4')
 
-taxis = soup.find_all('div',  class_='pl-4')
-
-
-for taxi in taxis:
+for photographer in photographers:
     try:
-        name = taxi.find('h3').text.strip() if taxi.find('h3') else None
+        name = photographer.find('h3').text.strip()
     except AttributeError:
         name = ''
-
     # get all <a> tags
-    links = taxi.find_all('a')
+    links = photographer.find_all('a')
 
     try: 
-        website = links[1]['href'] if len(links) > 1 else None
+        website = links[1]['href']
     except AttributeError:
         website = ''
 
     try:
-        phone = links[2].text.strip() if len(links) > 2 else None
+        phone = links[2].text.strip()
     except AttributeError:
         phone = ''
     try: 
-        email = links[3].text if len(links) > 3 else None
+        email = links[3].text
     except AttributeError:
         email = ''
 
 
-    taxis_name.append(name)
-    taxis_website.append(website)
-    taxis_phone.append(phone)
-    taxis_email.append(email)
-    
-taxi_data = {
-    'Taxis_Name': taxis_name,
-    'Taxis_Website': taxis_website,
-    'Taxis_Phone': taxis_phone,
-    'Taxis_Email': taxis_email
+    photographers_name.append(name)
+    photographers_website.append(website)
+    photographers_phone.append(phone)
+    photographers_email.append(email)
+
+
+driver.quit()
+
+photographer_data = {
+    'Photographers_Name': photographers_name,
+    'Photographers_website': photographers_website,
+    'Photographers_Phone': photographers_phone,
+    'Photographers_email': photographers_email
 }
 
+df_photogropher = pd.DataFrame(photographer_data)
 
-# Adding to dataframe
-df_taxis = pd.DataFrame(taxi_data)
-
-
-#Convert to csv file
-df_taxis.to_csv('taxis.csv', index=False)
-
+df_photogropher.to_csv('photographers.csv', index=False)

@@ -35,38 +35,35 @@ def chrome_driver():
 
 driver = chrome_driver()
 
-# Lists to store extracted data
-taxis_name = []
-taxis_website = []
-taxis_phone = []
-taxis_email = []
 
+# Plumbers Category scraping
 
-# Taxi Category scraping
+plumbers_name = []
+plumbers_website = []
+plumbers_phone = []
+plumbers_email = []
 
-url = "https://ukbusinessportal.co.uk/category/taxis/"
+url_plumbers = "https://ukbusinessportal.co.uk/category/plumbers/"
 
-res = requests.get(url)
+res = requests.get(url_plumbers)
 
 print(res.status_code)
 
-driver.get(url)
-
+driver.get(url_plumbers)
 time.sleep(10)
 
 soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-taxis = soup.find_all('div',  class_='pl-4')
+plumbers = soup.find_all('div',  class_='pl-4')
 
-
-for taxi in taxis:
+for plumber in plumbers:
     try:
-        name = taxi.find('h3').text.strip() if taxi.find('h3') else None
+        name = plumber.find('h3').text.strip() if plumber.find('h3') else None
     except AttributeError:
         name = ''
 
     # get all <a> tags
-    links = taxi.find_all('a')
+    links = plumber.find_all('a')
 
     try: 
         website = links[1]['href'] if len(links) > 1 else None
@@ -83,23 +80,23 @@ for taxi in taxis:
         email = ''
 
 
-    taxis_name.append(name)
-    taxis_website.append(website)
-    taxis_phone.append(phone)
-    taxis_email.append(email)
-    
-taxi_data = {
-    'Taxis_Name': taxis_name,
-    'Taxis_Website': taxis_website,
-    'Taxis_Phone': taxis_phone,
-    'Taxis_Email': taxis_email
+    plumbers_name.append(name)
+    plumbers_website.append(website)
+    plumbers_phone.append(phone)
+    plumbers_email.append(email)
+
+
+driver.quit()
+
+plumber_data = {
+    'Plumbers_Name': plumbers_name,
+    'Plumbers_website': plumbers_website,
+    'Plumbers_Phone': plumbers_phone,
+    'Plumbers_email': plumbers_email
 }
 
-
-# Adding to dataframe
-df_taxis = pd.DataFrame(taxi_data)
+df_plumber = pd.DataFrame(plumber_data)
 
 
-#Convert to csv file
-df_taxis.to_csv('taxis.csv', index=False)
 
+df_plumber.to_csv('plumbers.csv', index=False)
